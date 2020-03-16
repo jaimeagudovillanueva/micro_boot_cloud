@@ -2,6 +2,7 @@ package com.springboot.app.oauth.services;
 
 import com.springboot.app.oauth.clients.IUsuarioFeignClient;
 import com.springboot.app.usuarioscommons.models.entity.Usuario;
+import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,26 +27,33 @@ public class UsuarioService implements IUsuarioService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Usuario usuario = usuarioFeignClient.findByUsername(username);
 
-        if (usuario == null) {
+        try {
+            Usuario usuario = usuarioFeignClient.findByUsername(username);
+
+            List<GrantedAuthority> roles = usuario.getRoles()
+                    .stream()
+                    .map(rol -> new SimpleGrantedAuthority(rol.getNombre()))
+                    .peek(authority -> log.info("Rol: " + authority.getAuthority()))
+                    .collect(Collectors.toList());
+            log.info("Usuario autenticado: " + username);
+
+            return new User(usuario.getUsername(), usuario.getPassword(), usuario.getEnabled(),
+                    true, true, true, roles);
+
+        } catch (final FeignException e) {
             log.error("Error en el login, no existe el usuario '" + username + "' en el sistema");
             throw new UsernameNotFoundException(("Error en el login, no existe el usuario '" + username + "' en el sistema"));
         }
-
-        List<GrantedAuthority> roles = usuario.getRoles()
-                .stream()
-                .map(rol -> new SimpleGrantedAuthority(rol.getNombre()))
-                .peek(authority -> log.info("Rol: " + authority.getAuthority()))
-                .collect(Collectors.toList());
-        log.info("Usuario autenticado: " + username);
-
-        return new User(usuario.getUsername(), usuario.getPassword(), usuario.getEnabled(),
-                true, true, true, roles);
     }
 
     @Override
     public Usuario findByUsername(String username) {
         return usuarioFeignClient.findByUsername(username);
+    }
+
+    @Override
+    public Usuario update(Usuario usuario, Long id) {
+        return usuarioFeignClient.update(usuario, id);
     }
 }

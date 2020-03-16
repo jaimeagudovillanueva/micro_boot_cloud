@@ -3,17 +3,7 @@ package com.springboot.app.usuarioscommons.models.entity;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "usuarios")
@@ -41,6 +31,8 @@ public class Usuario implements Serializable {
 	inverseJoinColumns = @JoinColumn(name = "rol_id"),
 	uniqueConstraints = {@UniqueConstraint(columnNames = { "usuario_id", "rol_id" }) })
 	private List<Rol> roles;
+
+	private Integer intentos;
 
 	public List<Rol> getRoles() {
 		return roles;
@@ -104,6 +96,14 @@ public class Usuario implements Serializable {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public Integer getIntentos() {
+		return intentos;
+	}
+
+	public void setIntentos(Integer intentos) {
+		this.intentos = intentos;
 	}
 
 	private static final long serialVersionUID = 4002221912401133094L;
