@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.springboot.app.oauth</groupId>
-	<artifactId>springboot-servicio-oauh</artifactId>
+	<artifactId>springboot-servicio-oauth</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>springboot-servicio-oauh</name>
 	<description>Demo project for Spring Boot</description>
