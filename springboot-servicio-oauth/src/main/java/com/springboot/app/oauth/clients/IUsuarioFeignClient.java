@@ -10,6 +10,6 @@ public interface IUsuarioFeignClient {
     @GetMapping("/usuarios/search/buscar-username")
     Usuario findByUsername(@RequestParam String username);
 
-    @PutMapping("/usuarios/usuarios/{id}")
+    @PutMapping("/usuarios/{id}")
     Usuario update(@RequestBody Usuario usuario, @PathVariable Long id);
 }
